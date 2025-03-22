@@ -17,7 +17,6 @@ public class FileReaderMain extends ReadFile {
         System.out.println("Executing Shortest Job First (SJF) Scheduling:");
         SJFScheduler.schedule(new ArrayList<>(processes));
 
-        ReadFile();
     }
 
     public static List<Process> readProcessesFromFile(String filename) {

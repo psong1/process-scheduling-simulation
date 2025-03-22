@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class SJFScheduler {
-    
+
     // Main method to execute the Shortest Job First (SJF) scheduling
     public static void schedule(List<Process> processes) {
         // Sort processes by arrival time
@@ -10,37 +10,39 @@ public class SJFScheduler {
         // PriorityQueue to pick the process with the shortest burst time
         PriorityQueue<Process> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.burstTime));
 
-        int currentTime = 0;         
-        int completed = 0;           
-        List<String> ganttChart = new ArrayList<>();   
-        List<Integer> timeTrack = new ArrayList<>();   
-        timeTrack.add(0);          
+        int currentTime = 0;
+        int completed = 0;
+        List<String> ganttChart = new ArrayList<>();
+        List<Integer> timeTrack = new ArrayList<>();
+        Set<Integer> addedPIDs = new HashSet<>(); 
 
-        // Loop until all processes are completed
+        timeTrack.add(currentTime);
+
         while (completed < processes.size()) {
-            // Add processes that have arrived and are not already in the queue
+            // Add processes that have arrived and haven't been added yet
             for (Process p : processes) {
-                if (p.arrivalTime <= currentTime && !pq.contains(p)) {
+                if (p.arrivalTime <= currentTime && !addedPIDs.contains(p.pid)) {
                     pq.add(p);
+                    addedPIDs.add(p.pid);
                 }
             }
 
             if (!pq.isEmpty()) {
-                // Pick process with shortest burst time
+                // Pick the process with the shortest burst time
                 Process current = pq.poll();
-
-                // Add to Gantt chart
                 ganttChart.add("P" + current.pid);
 
-                // Calculate waiting and turnaround times
+                // Calculate times
                 current.waitingTime = currentTime - current.arrivalTime;
                 current.turnaroundTime = current.waitingTime + current.burstTime;
 
                 currentTime += current.burstTime;
                 timeTrack.add(currentTime);
+
                 completed++;
             } else {
-                // No process is ready
+                // CPU is idle
+                ganttChart.add("Idle");
                 currentTime++;
                 timeTrack.add(currentTime);
             }
@@ -49,7 +51,7 @@ public class SJFScheduler {
         displayResults(processes, ganttChart, timeTrack);
     }
 
-    // Print Gantt chart and process stats
+    // Display Gantt chart and process stats
     private static void displayResults(List<Process> processes, List<String> ganttChart, List<Integer> timeTrack) {
         System.out.println("\nGantt Chart:");
         for (String p : ganttChart) {
@@ -74,4 +76,3 @@ public class SJFScheduler {
         System.out.printf("Average Turnaround Time: %.2f%n", totalTAT / processes.size());
     }
 }
-
