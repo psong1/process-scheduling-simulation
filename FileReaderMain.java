@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReaderMain {
+public class FileReaderMain extends ReadFile {
+
     public static void main(String[] args) {
         List<Process> processes = readProcessesFromFile("processes.txt");
         if (processes.isEmpty()) {
@@ -15,7 +16,7 @@ public class FileReaderMain {
 
         System.out.println("Executing Shortest Job First (SJF) Scheduling:");
         SJFScheduler.schedule(new ArrayList<>(processes));
-        
+
     }
 
     public static List<Process> readProcessesFromFile(String filename) {
@@ -26,12 +27,14 @@ public class FileReaderMain {
                 // Split at whitespace
                 String[] parts = line.trim().split("\\s+");
                 if (parts.length == 4) {
-                    processes.add(new Process(
-                        Integer.parseInt(parts[0]), 
-                        Integer.parseInt(parts[1]), 
-                        Integer.parseInt(parts[2]), 
-                        Integer.parseInt(parts[3])
-                    ));
+                    processes.add(
+                        new Process(
+                            Integer.parseInt(parts[0]),
+                            Integer.parseInt(parts[1]),
+                            Integer.parseInt(parts[2]),
+                            Integer.parseInt(parts[3])
+                        )
+                    );
                 }
             }
         } catch (IOException e) {
